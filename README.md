@@ -78,17 +78,17 @@ The system is divided into two computational planes:
 │  │ RGB 4K   │  │ Stereo   │  │ Depth Engine  │  │
 │  │ Camera   │  │ Mono ×2  │  │ (SGM/SGBM)    │  │
 │  └────┬─────┘  └────┬─────┘  └──────┬────────┘  │
-│       │              │               │            │
-│       └──────────────┴───────────────┘            │
-│                        │                          │
-│              DepthAI Pipeline (on-device)         │
-│         [Lightweight YOLO / MobileNet optional]   │
+│       │              │               │          │
+│       └──────────────┴───────────────┘          │
+│                        │                        │
+│              DepthAI Pipeline (on-device)       │
+│         [Lightweight YOLO / MobileNet optional] │
 └────────────────────────┬────────────────────────┘
                          │ USB 3.1 (synchronized RGB+Depth frames)
                          ▼
 ┌─────────────────────────────────────────────────┐
-│              Jetson Orin Nano (Host)             │
-│                                                  │
+│              Jetson Orin Nano (Host)            │
+│                                                 │
 │  ┌──────────────────────────────────────────┐   │
 │  │           ROS2 Humble Node Graph         │   │
 │  │                                          │   │
@@ -97,7 +97,7 @@ The system is divided into two computational planes:
 │  │  /stereo/pointcloud ────────────┐  │  │  │   │
 │  │                                 │  │  │  │   │
 │  │  ┌─────────────────┐  ┌──────┐  │  │  │  │   │
-│  │  │ OWL-ViT / GD    │◄─┘  └──┘  │  │  │  │   │
+│  │  │ OWL-ViT / GD    │◄─┘   └──┘  │  │  │  │   │
 │  │  │ (open-vocab det)│            │  │  │  │   │
 │  │  └────────┬────────┘            │  │  │  │   │
 │  │           │ 2D bboxes           │  │  │  │   │
@@ -117,9 +117,9 @@ The system is divided into two computational planes:
 │  │  └────────┬────────┘                  │  │   │
 │  │           │ natural language output   │  │   │
 │  │  ┌────────▼────────────────────────┐  │  │   │
-│  │  │        Output Interface          │  │  │   │
-│  │  │  JSON scene graph | ROS topics   │  │  │   │
-│  │  └──────────────────────────────────┘  │  │   │
+│  │  │        Output Interface         │  │  │   │
+│  │  │  JSON scene graph | ROS topics  │  │  │   │
+│  │  └─────────────────────────────────┘  │  │   │
 │  └──────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────┘
 ```
@@ -416,15 +416,15 @@ OAK-D Pro Wide
                                           USB 3.1             │
                                                │               │
                                     ┌──────────▼───────────────▼──────────┐
-                                    │         Jetson Orin Nano             │
-                                    │                                      │
+                                    │         Jetson Orin Nano            │
+                                    │                                     │
                                     │  ┌───────────────────────────────┐  │
                                     │  │ depthai-ros bridge            │  │
                                     │  │ /rgb/image_raw                │  │
                                     │  │ /stereo/depth                 │  │
                                     │  │ /stereo/pointcloud            │  │
                                     │  └──────────┬────────────────────┘  │
-                                    │             │                        │
+                                    │             │                       │
                                     │  ┌──────────▼────────────────────┐  │
                                     │  │ Open-Vocab Detector Node      │  │
                                     │  │ Model: YOLO-World / GDino     │  │
@@ -432,7 +432,7 @@ OAK-D Pro Wide
                                     │  │ Output: List[BBox2D, label,   │  │
                                     │  │         confidence]           │  │
                                     │  └──────────┬────────────────────┘  │
-                                    │             │                        │
+                                    │             │                       │
                                     │  ┌──────────▼────────────────────┐  │
                                     │  │ 3D Localization Node          │  │
                                     │  │ - ROI depth extraction        │  │
@@ -440,23 +440,23 @@ OAK-D Pro Wide
                                     │  │ - Back-projection with K      │  │
                                     │  │ Output: List[Object3D]        │  │
                                     │  └──────────┬────────────────────┘  │
-                                    │             │                        │
+                                    │             │                       │
                                     │  ┌──────────▼────────────────────┐  │
                                     │  │ Scene Graph Builder Node      │  │
                                     │  │ - Geometric relation mining   │  │
                                     │  │ - Graph assembly              │  │
                                     │  │ Output: SceneGraph            │  │
                                     │  └──────────┬────────────────────┘  │
-                                    │             │                        │
+                                    │             │                       │
                                     │  ┌──────────▼────────────────────┐  │
                                     │  │ VLM Reasoner Node (async)     │  │
-                                    │  │ Model: Qwen2.5-VL-3B (AWQ)   │  │
+                                    │  │ Model: Qwen2.5-VL-3B (AWQ)    │  │
                                     │  │ Input: keyframe RGB +         │  │
                                     │  │        scene graph JSON       │  │
                                     │  │ Output: NL summary +          │  │
                                     │  │         traversability        │  │
                                     │  └──────────┬────────────────────┘  │
-                                    │             │                        │
+                                    │             │                       │
                                     │  ┌──────────▼────────────────────┐  │
                                     │  │ Output Publisher              │  │
                                     │  │ /scene_graph (JSON)           │  │
@@ -464,7 +464,7 @@ OAK-D Pro Wide
                                     │  │ /detected_objects (MarkerArray│  │
                                     │  │  for RViz visualization)      │  │
                                     │  └───────────────────────────────┘  │
-                                    └──────────────────────────────────────┘
+                                    └─────────────────────────────────────┘
 ```
 
 ---
